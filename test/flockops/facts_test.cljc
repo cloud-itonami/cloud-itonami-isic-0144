@@ -1,0 +1,57 @@
+(ns flockops.facts-test
+  (:require [clojure.test :refer [deftest is are testing]]
+            [flockops.facts :as facts]))
+
+(deftest supply-category-lookup
+  (testing "Lookup valid supply category"
+    (let [c (facts/supply-category-by-id "feed")]
+      (is (= "feed" (:id c)))
+      (is (= "飼料" (:name c)))))
+
+  (testing "Lookup invalid supply category"
+    (is (nil? (facts/supply-category-by-id "unknown")))))
+
+(deftest supply-category-cost-thresholds
+  (testing "Category-specific cost thresholds"
+    (are [id expected] (= expected (:cost-threshold (facts/supply-category-by-id id)))
+      "feed"                 500
+      "veterinary-supply"    500
+      "shearing-equipment"   800)))
+
+(deftest default-cost-threshold-value
+  (testing "Default fallback threshold matches the conservative baseline"
+    (is (= 500 facts/default-cost-threshold))))
+
+(deftest breed-lookup
+  (testing "Lookup valid breed"
+    (are [id expected-name] (= expected-name (:name (facts/breed-by-id id)))
+      "suffolk" "サフォーク"
+      "merino"  "メリノ"
+      "saanen"  "ザーネン"
+      "boer"    "ボア"))
+
+  (testing "Breed species classification"
+    (are [id expected-species] (= expected-species (:species (facts/breed-by-id id)))
+      "suffolk" :sheep
+      "merino"  :sheep
+      "saanen"  :goat
+      "boer"    :goat))
+
+  (testing "Lookup invalid breed"
+    (is (nil? (facts/breed-by-id "unknown")))))
+
+(deftest health-concern-lookup
+  (testing "Lookup valid health/welfare concern"
+    (let [c (facts/health-concern-by-id "scrapie")]
+      (is (= "scrapie" (:id c)))
+      (is (true? (:notifiable c)))))
+
+  (testing "Notifiable flag distinguishes reportable diseases"
+    (are [id expected-notifiable?] (= expected-notifiable? (:notifiable (facts/health-concern-by-id id)))
+      "scrapie"    true
+      "bluetongue" true
+      "fmd"        true
+      "footrot"    false))
+
+  (testing "Lookup invalid concern"
+    (is (nil? (facts/health-concern-by-id "unknown")))))
