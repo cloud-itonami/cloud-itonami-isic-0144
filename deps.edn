@@ -24,6 +24,17 @@
         {:local/root "../../kotoba-lang/langgraph"}}}
   ;; clojure -M:dev:run  -> drive the demo through one OperationActor
   :run {:main-opts ["-m" "flockops.sim"]}
+  ;; clojure -M:dev:render-html [out-file]
+  ;;   -> regenerate docs/samples/operator-console.html by driving the REAL
+  ;;      actor stack (operation -> advisor -> governor -> phase -> store).
+  ;;      Flagship checklist item 2. The DADS dependency is scoped to this
+  ;;      alias on purpose: the library itself stays zero-dependency, so
+  ;;      :test and :lint do not gain a git dep just to render a sample page.
+  :render-html {:extra-deps
+                {io.github.kotoba-lang/jp-go-digital-design-system
+                 {:git/url "https://github.com/kotoba-lang/jp-go-digital-design-system"
+                  :git/sha "83db99546eabc53613ae826ea41d1533a3c574af"}}
+                :main-opts ["-m" "flockops.render-html"]}
   :test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner
                       {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
