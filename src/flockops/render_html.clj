@@ -49,7 +49,7 @@
   bytes (both measured)."
   (:refer-clojure :exclude [num])
   (:require [clojure.java.io :as io]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [flockops.advisor :as advisor]
             [flockops.facts :as facts]
             [flockops.governor :as governor]
