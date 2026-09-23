@@ -1,5 +1,5 @@
 (ns flockops.governor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [flockops.governor :as gov]
             [flockops.store :as store]))
 
