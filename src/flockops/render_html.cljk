@@ -48,7 +48,7 @@
   `kbb -M:render-html` also works and produces the identical
   bytes (both measured)."
   (:refer-clojure :exclude [num])
-  (:require [clojure.java.io :as io]
+  (:require [kotoba.io :as io]
             [kotoba.lang.text :as str]
             [flockops.advisor :as advisor]
             [flockops.facts :as facts]
