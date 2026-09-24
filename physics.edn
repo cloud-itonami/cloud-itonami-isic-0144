@@ -1,0 +1,33 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README "Robotics premise": a facility-management robot keeps flock
+;; husbandry records (feeding, breeding, shearing, health checks), schedules
+;; operations and handles supplies for a sheep and goat farm (ISIC 0144). Its
+;; physical work: carrying feed sacks to the pens, and at shearing, lifting
+;; each shorn fleece onto the skirting table.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-0144"
+ :cases
+ [{:id :feed-sacks-to-pens
+   :kind :transport
+   :procedure "farm robot carries sacks of concentrate feed from the feed store across the yard to the pens"
+   :params {:mass-kg 100.0 :distance-m 80.0 :v-max-mps 1.2 :a-max-mps2 0.5
+            :brake-decel-mps2 1.0 :drive-force-n 350.0 :crr 0.06
+            :cog-height-m 0.55 :support-half-length-m 0.40 :max-time-s 3600.0}
+   :sweep {:param :payload-kg :values [50.0 100.0 200.0 300.0 400.0]}
+   :quantity :cycle-time-s
+   :limit {:max 90.0 :basis "estimate: one yard leg inside the feeding round's per-pen time"}
+   :boundary {:lo 10.0 :hi 800.0}}
+  {:id :fleece-onto-skirting-table
+   :kind :manipulator
+   :procedure "arm picks the shorn fleece up off the shearing board and throws it out flat on the skirting table"
+   :params {:l1-m 0.60 :l2-m 0.50 :m1-kg 7.0 :m2-kg 5.0
+            :from [0.60 -0.40] :to [0.50 0.50] :duration-s 1.5 :steps 300}
+   :sweep {:param :payload-kg :values [2.0 4.0 6.0 8.0 10.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 150.0 :basis "estimate: continuous shoulder torque of a 10-15 kg-class arm"}
+   :boundary {:lo 0.5 :hi 60.0}}]}
